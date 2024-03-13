@@ -8,11 +8,19 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+
+import java.io.IOException;
+import java.security.Provider;
 
 public class Application {
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) throws InterruptedException, IOException {
+    /*File file = new File("C:/Users/fan/Downloads/二维码商户录入指引.pdf");
+    PDDocument document = Loader.loadPDF(file);
+    PDFTextStripper stripper = new PDFTextStripper();
+    System.out.println(stripper.getText(document));*/
+
     EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     ServerBootstrap b = new ServerBootstrap(); // (2)
@@ -22,9 +30,9 @@ public class Application {
           @Override
           public void initChannel(SocketChannel ch) throws Exception {
             ch.pipeline()
-              .addLast(new ByteToLongDecoder())
-              .addLast(new StringEncoder())
-              .addLast(new DiscardServerHandler());
+              .addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 2, 0, 2))
+              .addLast(new ServiceMessageDecoder())
+              .addLast(new ServerHandler());
           }
         })
         .option(ChannelOption.SO_BACKLOG, 128)          // (5)
