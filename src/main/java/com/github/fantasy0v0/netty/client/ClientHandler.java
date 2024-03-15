@@ -24,7 +24,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     buffer.writeBytes(requestBytes);
 
     ByteBuf data = Unpooled.buffer();
-    data.writeShort(buffer.writerIndex());
+    data.writeShort(buffer.readableBytes());
     data.writeBytes(buffer);
     ctx.writeAndFlush(data).addListener(t -> ctx.close());
   }
