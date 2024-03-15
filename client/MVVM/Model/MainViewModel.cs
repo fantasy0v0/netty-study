@@ -45,6 +45,19 @@ namespace client.MVVM.Model
 				TcpClient client = new TcpClient(Host, Port);
 				var stream = client.GetStream();
 				ByteBuffer buffer = new ByteBuffer();
+                // 消息类型 0 请求
+                buffer.WriteByte(0);
+                // 消息id
+                buffer.WriteShort(1);
+                // 业务类型
+                buffer.WriteShort(100);
+				string data = "你好吗?";
+				buffer.WriteString(data);
+				var bytes = buffer.Wrap();
+                stream.Write(bytes, 0, bytes.Length);
+                stream.Flush();
+                stream.Close();
+				client.Close();
             }, param =>
 			{
 				return true;

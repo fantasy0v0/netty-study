@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,25 +30,36 @@ namespace client
             return stream.ToArray();
         }
 
-        public void Write(byte value)
+        public void WriteByte(byte value)
         {
             writer.Write(value);
         }
 
-        public void Write(short value)
+        public void WriteShort(short value)
         {
-            writer.Write(value);
+            writer.Write(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(value)));
         }
 
-        public void Write(int value)
+        public void WriteInt(int value)
         {
-            writer.Write(value);
+            writer.Write(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(value)));
         }
 
-        public void Write(string value)
+        public void WriteBytes(byte[] value, int index, int count)
+        {
+            writer.Write(value, index, count);
+        }
+
+        public void WriteBytes(byte[] value)
+        {
+            writer.Write(value, 0, value.Length);
+        }
+
+        public void WriteString(string value)
         {
             byte[] buffer = Encoding.UTF8.GetBytes(value);
-            writer.Write(buffer);
+            WriteShort((short)buffer.Length);
+            WriteBytes(buffer);
         }
 
         public void Write(ByteBuffer buffer)
@@ -60,6 +72,20 @@ namespace client
         public void Flush()
         {
             writer.Flush();
+        }
+
+        /// <summary>
+        /// 加上整体长度
+        /// </summary>
+        /// <returns></returns>
+        public byte[] Wrap()
+        {
+            ByteBuffer buffer = new ByteBuffer();
+            Flush();
+            var data = ToArray();
+            buffer.WriteShort((short)data.Length);
+            buffer.WriteBytes(data);
+            return buffer.ToArray();
         }
     }
 }
