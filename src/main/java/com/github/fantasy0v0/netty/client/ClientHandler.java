@@ -13,7 +13,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
   public void channelActive(ChannelHandlerContext ctx) {
     String request = "Hello World";
     ByteBuf buffer = Unpooled.buffer();
-    // 消息类型
+    // 消息类型 0 请求
     buffer.writeByte(0);
     // 消息id
     buffer.writeShort(1);
@@ -24,8 +24,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     buffer.writeBytes(requestBytes);
 
     ByteBuf data = Unpooled.buffer();
-    data.writeShort(buffer.capacity());
-    ctx.writeAndFlush(buffer);
+    data.writeShort(buffer.writerIndex());
+    data.writeBytes(buffer);
+    ctx.writeAndFlush(data).addListener(t -> ctx.close());
   }
 
 }

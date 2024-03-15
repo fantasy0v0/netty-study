@@ -27,4 +27,35 @@ public class ServiceMessage {
    */
   private ByteBuf data;
 
+  public byte getType() {
+    return type;
+  }
+
+  public void setType(byte type) {
+    this.type = type;
+  }
+
+  public short getId() {
+    return id;
+  }
+
+  public void setId(short id) {
+    this.id = id;
+  }
+
+  public short getBusinessType() {
+    return businessType;
+  }
+
+  public void setBusinessType(short businessType) {
+    this.businessType = businessType;
+  }
+
+  public ByteBuf getData() {
+    return data;
+  }
+
+  public void setData(ByteBuf data) {
+    this.data = data;
+  }
 }

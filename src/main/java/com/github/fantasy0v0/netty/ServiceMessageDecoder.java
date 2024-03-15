@@ -18,11 +18,12 @@ public class ServiceMessageDecoder extends MessageToMessageDecoder<ByteBuf> {
     System.out.println("消息编号: " + id);
     short businessType = msg.readShort();
     System.out.println("业务类型: " + businessType);
-    short length = msg.readShort();
-    byte[] businessData = new byte[length];
-    msg.readBytes(businessData);
-    String value = new String(businessData, StandardCharsets.UTF_8);
-    System.out.println("业务数据: " + value);
+    ServiceMessage message = new ServiceMessage();
+    message.setType(type);
+    message.setId(id);
+    message.setBusinessType(businessType);
+    message.setData(msg.retainedSlice(msg.readerIndex(), msg.readableBytes()));
+    out.add(message);
   }
 
 }

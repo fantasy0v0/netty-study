@@ -17,3 +17,7 @@ buildNumber.properties
 .classpath
 
 .idea
+
+client/.vs
+client/obj
+client/bin
