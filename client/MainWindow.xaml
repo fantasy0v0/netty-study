@@ -4,23 +4,27 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:client"
+        xmlns:cv="clr-namespace:client.Converter"
         xmlns:vm="clr-namespace:client.MVVM.Model"
         mc:Ignorable="d" SizeToContent="Height"
         Title="MainWindow" Width="700" ResizeMode="NoResize">
     <Window.DataContext>
         <vm:MainViewModel />
     </Window.DataContext>
+    <Window.Resources>
+        <cv:BooleanNegationConverter x:Key="negationConverter"></cv:BooleanNegationConverter>
+    </Window.Resources>
 
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal" Margin="5">
             <Label Margin="0,0,10,0">主机地址:</Label>
-            <TextBox Width="150" Text="{ Binding Host }" VerticalContentAlignment="Center"></TextBox>
+            <TextBox Width="150" Text="{ Binding Host }" VerticalContentAlignment="Center" IsEnabled="{ Binding IsConnected, Converter= {StaticResource negationConverter} }"></TextBox>
             <Label Margin="0,0,10,0">端口:</Label>
-            <TextBox Width="50" Margin="0,0,10,0" Text="{ Binding Port }" VerticalContentAlignment="Center"></TextBox>
+            <TextBox Width="50" Margin="0,0,10,0" Text="{ Binding Port }" VerticalContentAlignment="Center" IsEnabled="{ Binding IsConnected, Converter= {StaticResource negationConverter} }"></TextBox>
             <Label Margin="0,0,10,0">设备编号:</Label>
-            <TextBox Width="150" Margin="0,0,10,0" Text="{ Binding DeviceId }" VerticalContentAlignment="Center"></TextBox>
-            <Button Width="40" Margin="0,0,10,0" Command="{ Binding Connect }">连接</Button>
-            <Button Width="40" IsEnabled="False">关闭</Button>
+            <TextBox Width="150" Margin="0,0,10,0" Text="{ Binding DeviceId }" VerticalContentAlignment="Center" IsEnabled="{ Binding IsConnected, Converter= {StaticResource negationConverter} }"></TextBox>
+            <Button Width="40" Margin="0,0,10,0" Command="{ Binding ConnectCommand }">连接</Button>
+            <Button Width="40" Command="{ Binding CloseCommand }">关闭</Button>
         </StackPanel>
         <GroupBox Margin="5">
             <GroupBox.Header>
@@ -54,8 +58,12 @@
                 <GroupBox>
                     <GroupBox.Header>警告上报</GroupBox.Header>
                     <StackPanel Orientation="Vertical">
-                        <TextBox AcceptsReturn="True" Width="200" Height="50" Margin="3" VerticalScrollBarVisibility="Auto"></TextBox>
-                        <Button Margin="0,5,0,0">上报</Button>
+                        <TextBox AcceptsReturn="True"
+                                 Width="200" Height="50" Margin="3"
+                                 VerticalScrollBarVisibility="Auto"
+                                 IsEnabled="{ Binding IsConnected }">
+                        </TextBox>
+                        <Button Margin="0,5,0,0" Command="{ Binding ReportCommand }">上报</Button>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>

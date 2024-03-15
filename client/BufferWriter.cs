@@ -8,21 +8,25 @@ using System.Threading.Tasks;
 
 namespace client
 {
-    internal class ByteBuffer
+    internal class BufferWriter
     {
         private readonly MemoryStream stream;
 
         private readonly BinaryWriter writer;
 
-        public ByteBuffer()
+        private readonly BinaryReader reader;
+
+        public BufferWriter()
         {
             stream = new MemoryStream();
             writer = new BinaryWriter(stream);
+            reader = new BinaryReader(stream);
         }
 
-        ~ByteBuffer()
+        ~BufferWriter()
         {
             writer.Dispose();
+            stream.Dispose();
         }
 
         public byte[] ToArray()
@@ -62,7 +66,7 @@ namespace client
             WriteBytes(buffer);
         }
 
-        public void Write(ByteBuffer buffer)
+        public void WriteBuffer(BufferWriter buffer)
         {
             buffer.Flush();
             var bytes = buffer.ToArray();
@@ -80,7 +84,7 @@ namespace client
         /// <returns></returns>
         public byte[] Wrap()
         {
-            ByteBuffer buffer = new ByteBuffer();
+            BufferWriter buffer = new BufferWriter();
             Flush();
             var data = ToArray();
             buffer.WriteShort((short)data.Length);

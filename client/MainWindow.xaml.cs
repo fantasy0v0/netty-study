@@ -1,4 +1,5 @@
-﻿using System;
+﻿using client.MVVM.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,15 @@ namespace client
         public MainWindow()
         {
             InitializeComponent();
+            Closed += MainWindow_Closed;
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                vm.Dispose();
+            }
         }
     }
 }
